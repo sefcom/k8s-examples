@@ -11,7 +11,7 @@ Because this is an `Indexed` completion job, each pod will get a different value
 If you configure the pod `restartPolicy` to `OnFailure`, Kubernetes will automatically re-run contianers that have failed, though it will back off if it fails repeatedly.
 
 # `kubectl` commands
-To create your job: `kubectl apply -f job.yaml`
+To create your job: `kubectl create -f job.yaml`
 
 To see currently running jobs in your namespace: `kubectl get jobs`
 
@@ -21,7 +21,7 @@ To get much more detail for jobs or pods including info useful for debugging, re
 
 To get logs for a pod: `kubectl logs <pod>`
 
-To delete a job: `kubectl delete job <job>`
+To delete a job: `kubectl delete job <job>` or `kubectl delete -f job.yaml`
 
 # More info
 
