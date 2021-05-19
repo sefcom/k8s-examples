@@ -5,11 +5,9 @@ This repository holds examples that can be used to quickly get an experiment run
 
 ## Scenarios
 
-### I have a specific number of tasks I need to run totalling less than a few thousand:
+### I have a specific number of tasks I need to run:
 Check out `indexed_job`!
-
-### I have a specific number of tasks, but it is more than a few thousand:
-TBD, probably a queue and a replicaset
+If your tasks run more than a thousand or so, please look at `pod_cleaner`.
 
 ### I have a variable number of tasks, which cannot be determined statically:
 TBD, probably a queue and a replicaset
