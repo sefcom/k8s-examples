@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-cleaner-account
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-cleaner
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["list", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+subjects:
+- kind: ServiceAccount
+  name: pod-cleaner-account
+roleRef:
+  kind: Role
+  name: pod-cleaner
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pod-cleaner
+spec:
+  schedule: "*/20 * * * *"
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 60
+      template:
+        spec:
+          serviceAccountName: pod-cleaner-account
+          containers:
+          - name: pod-cleaner
+            image: bitnami/kubectl
+            command:
+              - kubectl
+              - delete
+              - pod
+              - --field-selector=status.phase==Succeeded
+            resources:
+              limits:
+                memory: "128Mi"
+                cpu: "500m"
+          restartPolicy: OnFailure
