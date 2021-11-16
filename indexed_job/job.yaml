@@ -12,7 +12,6 @@ spec:
       containers:
       - name: example-worker
         image: alpine:3.13
-        imagePullPolicy: Always
         command:
         - 'sh'
         - '-c'
