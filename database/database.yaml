@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:14
+          imagePullPolicy: "Always"
+          args:
+            # CHANGEME - any postgres parameters you care about
+            # see https://www.postgresql.org/docs/14/runtime-config.html
+            - "postgres"
+            - "-c"
+            - "shared_buffers=2GB"
+            - "-c"
+            - "max_connections=2000"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: PGDATA
+              value: "/volume/postgres"
+              # CHANGEME - environment variables to configure the postgres docker image
+              # see https://github.com/docker-library/docs/blob/master/postgres/README.md#environment-variables
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "changeme"
+            - name: POSTGRES_DB
+              value: "postgres"
+          volumeMounts:
+            - mountPath: "/volume"
+              name: postgres-pvc
+          resources:
+            # CHANGEME - the resource allocations for the server
+            # see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+            requests:
+              memory: '2Gi'
+              cpu: '4000m'
+            limits:
+              memory: '4Gi'
+              cpu: '4000m'
+      volumes:
+        - name: postgres-pvc
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  type: NodePort
+  ports:
+   - port: 5432
+  selector:
+    app: postgres
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  storageClassName: "openebs-hostpath"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi   # CHANGEME - the total disk space you will be able to use
