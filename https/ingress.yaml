@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-https  # CHANGEME: pick a unique name for this ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/issuer: "letsencrypt-prod"  # if making rapid changes, put letsencrypt-staging
+    #ingress.kubernetes.io/ssl-redirect: "false"  # uncomment this to allow http traffic
+spec:
+  tls:
+  - hosts:
+    - my.example.com  # CHANGEME: put your domain name which points to the cluster
+    secretName: my-https  # CHANGEME: pick a unique name for this secret
+  rules:
+  - host: my.example.com  # CHANGEME: same domain name as above
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: my-service  # CHANGEME: put the name of a service object serving http here
+            port:
+              number: 80  # CHANGEME: put the port the service object is listening on here
+              # name: "http"  # alternatively, specify the port name (can't do both)
