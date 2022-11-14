@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vnc-app-nfs
+spec:
+  selector:
+    matchLabels:
+      app: vnc-app-nfs
+  template:
+    metadata:
+      labels:
+        app: vnc-app-nfs
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: vnc-app-nfs
+        image: dorowu/ubuntu-desktop-lxde-vnc:focal
+        ports:
+          - containerPort: 5900
+        env:
+          - name: VNC_PASSWORD
+            value: "Hacking!"
+        volumeMounts:
+        - name: nfs-shared
+          mountPath: "/shared"
+      volumes:
+        - name: nfs-shared
+          persistentVolumeClaim:
+            claimName: nfs
