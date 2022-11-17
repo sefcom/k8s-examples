@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vnc-app
+spec:
+  selector:
+    matchLabels:
+      app: vnc-app
+  template:
+    metadata:
+      labels:
+        app: vnc-app
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: vnc-app
+        image: dorowu/ubuntu-desktop-lxde-vnc:focal
+        ports:
+          - containerPort: 5900
+        env:
+          - name: VNC_PASSWORD
+            value: "Hacking!"
