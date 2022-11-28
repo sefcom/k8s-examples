@@ -36,6 +36,7 @@ ingress-nginx-controller-2vzfv   1/1     Running   0               14d
 ## Configure an Issuer
 
 ```
+$ vim letsencrypt.yaml   # change the email in this configuration to your own!
 $ kubectl apply -f letsencrypt.yaml
 ```
 
